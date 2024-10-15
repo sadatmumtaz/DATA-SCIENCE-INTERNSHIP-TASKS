@@ -1,4 +1,3 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,17 +9,14 @@
 <body>
     <h1>Upload an Image for Classification</h1>
 
-    <!-- Form to upload the image -->
     <form action="/" method="post" enctype="multipart/form-data">
         <input type="file" name="file">
         <input type="submit" value="Classify Image">
     </form>
 
-    <!-- Display the uploaded image and classification result -->
     {% if prediction %}
         <h2>{{ prediction }}</h2>
 
-        <!-- If image URL is provided, show the uploaded image -->
         {% if image_url %}
             <img src="{{ url_for('static', filename=image_url) }}" alt="Uploaded Image" style="max-width: 300px; margin-top: 20px;">
         {% endif %}

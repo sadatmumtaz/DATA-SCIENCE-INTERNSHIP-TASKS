@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, request, render_template
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -29,19 +28,17 @@ def home():
             file.save(file_path)
 
             # Preprocess the image for the model
-            img = image.load_img(file_path, target_size=(32, 32))  # Adjust according to model input size
-            img_array = image.img_to_array(img) / 255.0  # Normalize the image
-            img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+            img = image.load_img(file_path, target_size=(32, 32))
+            img_array = image.img_to_array(img) / 255.0  
+            img_array = np.expand_dims(img_array, axis=0) 
 
             # Predict the class using the loaded model
             predictions = model.predict(img_array)
             class_idx = np.argmax(predictions[0])
             class_name = class_names[class_idx]
 
-            # Pass the result and image URL back to the template
             return render_template('index.html', prediction=f'The image is classified as: {class_name}', image_url=file.filename)
 
-    # For GET request, just render the page
     return render_template('index.html', prediction=None, image_url=None)
 
 if __name__ == "__main__":
