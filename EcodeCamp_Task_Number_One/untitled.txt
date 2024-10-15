@@ -1,0 +1,52 @@
+Customer Churn Analysis Report
+1. Introduction:
+The objective of this analysis is to identify factors contributing to customer churn and provide actionable insights to improve customer retention strategies. Customer churn refers to the phenomenon of customers leaving or canceling a service. Understanding the reasons behind churn is critical for companies to improve their services and retain customers. For this analysis, we use a customer churn dataset containing various attributes like tenure, monthly charges, and services subscribed to by customers.
+
+2. Data Preprocessing Summary:
+Data preprocessing is an essential step to ensure clean and accurate analysis. Here’s a summary of the preprocessing tasks performed:
+
+Handling Missing Values: We checked the dataset for any missing values using customer_churn_data.isnull().sum(). Missing values were found in a few columns. For this analysis:
+
+Missing values in the TotalCharges column were imputed using the median value, as it represents the total charges customers have paid and is likely influenced by the tenure.
+Any missing rows that were not critical were removed.
+Outlier Treatment: Outliers were identified using boxplots for numerical features such as MonthlyCharges and tenure. No significant outliers were detected that could skew the analysis, so no outliers were removed.
+
+Normalization/Standardization: As this is an exploratory analysis and no machine learning models are applied yet, normalization was not necessary at this stage. However, for future predictive modeling, standardizing columns like MonthlyCharges and TotalCharges would be appropriate.
+
+3. Statistical Summaries & Visualizations:
+3.1 Descriptive Statistics:
+Using customer_churn_data.describe(), we generated summary statistics for key numerical features such as tenure, MonthlyCharges, and TotalCharges. Here are a few notable observations:
+
+Tenure: The average customer tenure is around 32 months, with some customers staying with the company for up to 72 months.
+Monthly Charges: The average monthly charge is approximately $64.76, with some customers paying as low as $18.25 and as high as $118.75.
+3.2 Visualizations:
+Histograms: A histogram of tenure shows a high concentration of customers with shorter tenures, indicating that newer customers are more likely to churn.
+
+python
+Copy code
+sns.histplot(customer_churn_data['tenure'], kde=True)
+plt.show()
+Bar Plot (Churn by Internet Service): A bar plot reveals that customers who use fiber optic internet service are more likely to churn compared to those who use DSL or have no internet service.
+
+python
+Copy code
+sns.countplot(x='InternetService', hue='Churn', data=customer_churn_data)
+plt.show()
+Correlation Matrix: A correlation matrix showed that MonthlyCharges has a positive correlation with churn, while tenure has a negative correlation. Customers with longer tenure tend to churn less, while higher monthly charges are associated with an increased likelihood of churn.
+
+python
+Copy code
+sns.heatmap(customer_churn_data.corr(), annot=True, cmap='coolwarm')
+plt.show()
+Scatter Plot (Tenure vs. Monthly Charges): A scatter plot between tenure and MonthlyCharges shows that customers with higher monthly charges and shorter tenure tend to churn more frequently.
+
+python
+Copy code
+sns.scatterplot(x='tenure', y='MonthlyCharges', hue='Churn', data=customer_churn_data)
+plt.show()
+4. Conclusion:
+This exploratory data analysis provides several key insights into customer churn:
+
+Short Tenure: Customers with shorter tenure are more likely to churn. This suggests that improving the experience for new customers could reduce churn rates.
+High Monthly Charges: There is a clear positive correlation between higher monthly charges and the likelihood of churn. This indicates that customers paying higher charges may feel less satisfied or perceive the service as overpriced.
+Service Type: Customers using fiber optic internet service churn at a higher rate compared to those using DSL or no internet service. Further investigation could be done to understand whether the issue is related to service quality, price, or customer expectations.

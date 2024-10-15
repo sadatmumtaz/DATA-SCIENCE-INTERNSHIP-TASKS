@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        select {
+                padding: 10px;
+                margin: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #fff;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                font-size: 16px;
+            }
+            select:focus {
+                border-color: #007BFF;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #predictionResult {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <h1>Real-Time Stock Price Prediction</h1>
+        <label for="stockSymbol">Select Stock Symbol:</label>
+        <select id="stockSymbolDropdown" title="Stock Symbol Dropdown" onchange="toggleInput(this.value)">
+            <option value="">Select a stock...</option>
+            <option value="AAPL">Apple Inc. (AAPL)</option>
+            <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
+            <option value="AMZN">Amazon.com Inc. (AMZN)</option>
+            <option value="MSFT">Microsoft Corporation (MSFT)</option>
+            <option value="TSLA">Tesla Inc. (TSLA)</option>
+            <option value="FB">Facebook Inc. (FB)</option>
+            <option value="NVDA">NVIDIA Corporation (NVDA)</option>
+            <option value="PYPL">PayPal Holdings Inc. (PYPL)</option>
+            <option value="NFLX">Netflix Inc. (NFLX)</option>
+            <option value="INTC">Intel Corporation (INTC)</option>
+            <option value="CSCO">Cisco Systems Inc. (CSCO)</option>
+        </select>
+
+        <input type="text" id="stockSymbolInput" placeholder="Enter Stock Symbol" oninput="toggleDropdown(this.value)" />
+
+        <script>
+            function toggleInput(value) {
+            document.getElementById('stockSymbolInput').disabled = value !== "";
+            }
+
+            function toggleDropdown(value) {
+            document.getElementById('stockSymbolDropdown').disabled = value !== "";
+            }
+        </script>
+        <label for="modelType">Select Model Type:</label>
+        <select id="modelType">
+            <option value="lstm">LSTM Model</option>
+            <option value="arima">ARIMA Model</option>
+        </select>
+        <button onclick="getPrediction()">Get Prediction</button>
+
+        <div id="predictionResult"></div>
+    </div>
+
+    <script>
+        function getPrediction() {
+            const stockSymbol = document.getElementById('stockSymbolDropdown').value || document.getElementById('stockSymbolInput').value;
+            const modelType = document.getElementById('modelType').value;
+            
+            if (!stockSymbol) {
+                alert('Please enter a stock symbol.');
+                return;
+            }
+
+            fetch(`http://localhost:8000/predict?symbol=${stockSymbol}&model=${modelType}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('predictionResult').innerHTML = `Error: ${data.error}`;
+                    } else {
+                        document.getElementById('predictionResult').innerHTML = 
+                            `Predicted Price for ${data.symbol}: $${data.predicted_price.toFixed(2)}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('predictionResult').innerHTML = 'Failed to fetch prediction.';
+                });
+        }
+    </script>
+
+</body>
+</html>
