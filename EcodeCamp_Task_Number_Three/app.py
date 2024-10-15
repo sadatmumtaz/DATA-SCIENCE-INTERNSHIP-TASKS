@@ -6,9 +6,8 @@ import numpy as np
 import pandas as pd
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS
+CORS(app)
 
-# Load the model
 model = joblib.load('titanic_model.pkl')
 
 # Feature names expected by the model
