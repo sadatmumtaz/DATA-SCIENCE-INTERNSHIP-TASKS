@@ -6,10 +6,10 @@ from keras.models import load_model
 import pickle
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from flask_cors import CORS  # Add CORS import for web requests
+from flask_cors import CORS 
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS to handle cross-origin requests
+CORS(app)  
 
 # Load the saved models
 lstm_model = load_model('lstm_model.h5')
@@ -23,7 +23,7 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 @app.route('/predict', methods=['GET'])
 def predict_stock():
     stock_symbol = request.args.get('symbol', 'AAPL')
-    model_type = request.args.get('model', 'lstm')  # Use 'lstm' or 'arima' to choose model
+    model_type = request.args.get('model', 'lstm')
     
     try:
         # Fetch stock data (use a valid period such as '1mo' or '3mo')
@@ -40,18 +40,24 @@ def predict_stock():
         
         # Choose which model to use
         if model_type == 'lstm':
+
             # LSTM model prediction logic
-            X_input = scaled_data[-60:]  # Get the last 60 days' data
-            X_input = np.reshape(X_input, (1, X_input.shape[0], 1))  # Reshape for LSTM input
+            # Get the last 60 days' data
+            X_input = scaled_data[-60:]  
+
+            # Reshape for LSTM input
+            X_input = np.reshape(X_input, (1, X_input.shape[0], 1))  
             prediction_scaled = lstm_model.predict(X_input)
-            prediction = scaler.inverse_transform(prediction_scaled)[0][0]  # Inverse scaling to get the actual value
+
+            # Inverse scaling to get the actual value
+            prediction = scaler.inverse_transform(prediction_scaled)[0][0]  
             
             # Convert to Python float to avoid JSON serialization issues
             prediction = float(prediction)
             
         elif model_type == 'arima':
             # ARIMA model prediction logic
-            arima_prediction = arima_model.forecast(steps=1)  # Predict the next step
+            arima_prediction = arima_model.forecast(steps=1)  
             prediction = arima_prediction[0]
             
             # Convert to Python float to avoid JSON serialization issues
